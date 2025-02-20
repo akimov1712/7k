@@ -35,6 +35,19 @@
     <string name="take">Take</string>
     <string name="promo_points">Promo Points</string>
     <string name="you_win">You Win</string>
+    <string name="your_bonus">Your bonus</string>
     <string name="show_this_qr">Show this  QR-Code to the waiter to get the promo points</string>
     <string name="points">Points</string>
+
+    <string name="tabs_about">About</string>
+    <string name="tabs_reservation">Reservation</string>
+    <string name="tabs_menu">Menu</string>
+    <string name="tabs_contact">Contact</string>
+    <string name="tabs_promo">Promo</string>
+
+    <string name="to_continue">To continue, please complete your registration.</string>
+    <string name="registration">Registration</string>
+    <string name="by_click_register">By clicking the “Register” button, you confirm that you have read and accept the</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="sms_conf_free">SMS confirmation is free.\nYour data is encrypted.</string>
 </resources>

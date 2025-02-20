@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.loungebar7k.app"
+    namespace = "com.app7k.lounge"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.loungebar7k.app"
+        applicationId = "com.app7k.lounge"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -41,10 +41,13 @@ android {
 
 dependencies {
 
+    implementation(libs.jetpack.compose.country.code.picker.emoji)
+    implementation("androidx.compose.material:material:1.7.8")
     implementation (libs.accompanist.systemuicontroller)
     implementation(libs.voyager.bottom.sheet.navigator)
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transitions)
+    implementation(libs.voyager.tab)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
