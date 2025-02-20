@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">7k Official Lounge</string>
+    <string name="lounge_information">Lounge Information</string>
+    <string name="contact">Contact</string>
+    <string name="working_hours">Working hours</string>
+    <string name="working_hours_descr">MON - THU: 10 a.m. - 2 a.m\nFRI: 10 a.m - 12 a.m\nSAT &amp; SUN: 12 p.m - 8 p.m\nKitchen is open: 12 p.m - 8 p.m</string>
+    <string name="table_reservation">Table reservation</string>
+    <string name="table">Table</string>
+    <string name="name">Name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="choose">Choose</string>
+    <string name="reservation_list">Reservation list</string>
+    <string name="menu">Menu</string>
+    <string name="golden_sunset_ingr">tequila, orange liqueur, grapefruit juice, garnished with gold dust</string>
+    <string name="blue_lagoon_ingr">vodka, blue curaçao, lemonade, on ice</string>
+    <string name="tropical_breeze_ingr">rum, mango puree, pineapple juice, lime juice</string>
+    <string name="citrus_mors_ingr">classic recipe with mint</string>
+    <string name="gourmet_burger_ingr">angus beef patty, aged cheddar, caramelized onions, special sauce</string>
+    <string name="bruschetta_selection_ingr">tomato, mozzarella, pesto, and roasted vegetable options</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="any_question">Any question or suggestions</string>
+    <string name="type_message">Type message...</string>
+    <string name="message_is_sent">The message is sent</string>
+</resources>
