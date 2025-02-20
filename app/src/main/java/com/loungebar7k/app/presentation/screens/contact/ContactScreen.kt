@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,9 +46,9 @@ object ContactScreen: Screen {
                 .padding(horizontal = 30.dp, vertical = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var name by remember{ mutableStateOf("") }
-            var email by remember{ mutableStateOf("") }
-            var message by remember{ mutableStateOf("") }
+            var name by rememberSaveable{ mutableStateOf("") }
+            var email by rememberSaveable{ mutableStateOf("") }
+            var message by rememberSaveable{ mutableStateOf("") }
             AppText(
                 text = stringResource(R.string.contact_us),
                 fontWeight = FontWeight.Bold,

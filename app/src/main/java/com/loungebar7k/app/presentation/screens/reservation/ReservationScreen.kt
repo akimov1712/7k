@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,8 +61,8 @@ object ReservationScreen: Screen {
     override fun Content() {
         val dateState = rememberDatePickerState()
         val timeState = rememberTimePickerState()
-        var onOpenDatePicker by remember { mutableStateOf(false) }
-        var onOpenTimePicker by remember { mutableStateOf(false) }
+        var onOpenDatePicker by rememberSaveable { mutableStateOf(false) }
+        var onOpenTimePicker by rememberSaveable { mutableStateOf(false) }
 
         Column(
             modifier = Modifier
@@ -74,10 +75,10 @@ object ReservationScreen: Screen {
 
             var reservationList by remember { mutableStateOf<List<ReservationEntity>>(emptyList()) }
 
-            var name by remember { mutableStateOf("") }
-            var phone by remember { mutableStateOf("") }
-            var date by remember { mutableStateOf("") }
-            var time by remember { mutableStateOf("") }
+            var name by rememberSaveable { mutableStateOf("") }
+            var phone by rememberSaveable { mutableStateOf("") }
+            var date by rememberSaveable { mutableStateOf("") }
+            var time by rememberSaveable { mutableStateOf("") }
 
             if (onOpenDatePicker) {
                 DatePicker(

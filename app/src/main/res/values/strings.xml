@@ -25,4 +25,16 @@
     <string name="any_question">Any question or suggestions</string>
     <string name="type_message">Type message...</string>
     <string name="message_is_sent">The message is sent</string>
+
+    <string name="welcome_bonus">Welcome bonus</string>
+    <string name="get_welcome_bonus">Get a welcome bonus and show the QR-code to the waiter</string>
+    <string name="get_a_bonus">Get a bonus</string>
+    <string name="spin">Spin</string>
+    <string name="spin_the_wheel">Spin the wheel</string>
+    <string name="rules">Rules</string>
+    <string name="take">Take</string>
+    <string name="promo_points">Promo Points</string>
+    <string name="you_win">You Win</string>
+    <string name="show_this_qr">Show this  QR-Code to the waiter to get the promo points</string>
+    <string name="points">Points</string>
 </resources>
