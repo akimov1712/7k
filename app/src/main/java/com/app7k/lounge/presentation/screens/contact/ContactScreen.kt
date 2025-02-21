@@ -104,7 +104,7 @@ object ContactScreen: Tab {
             val context = LocalContext.current
             val messageToast = stringResource(R.string.message_is_sent)
             AppButton(
-                text = "Send",
+                text = stringResource(R.string.send),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

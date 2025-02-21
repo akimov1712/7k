@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,15 +24,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.app7k.lounge.R
 import com.app7k.lounge.presentation.screens.auth.AuthScreen
+import com.app7k.lounge.presentation.screens.tabs.TabsScreen
+import com.app7k.lounge.presentation.screens.webView.WebViewScreen
 import com.app7k.lounge.ui.components.AppText
 import com.app7k.lounge.ui.theme.Colors
 import kotlinx.coroutines.delay
@@ -54,8 +61,19 @@ private fun SplashScreen() {
             .background(Brush.verticalGradient(listOf(Colors.RED, Colors.RED_BLACK))),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val context = LocalContext.current
+        val viewModel = remember { SplashViewModel(context) }
+        val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
         var progress by remember { mutableStateOf(0.0f) }
+        LaunchedEffect(state.openScreen) {
+            when(val screen = state.openScreen){
+                SplashState.Screen.AUTH -> navigator.replaceAll(AuthScreen)
+                SplashState.Screen.NATIVE -> navigator.replaceAll(TabsScreen)
+                is SplashState.Screen.WEBVIEW -> navigator.replaceAll(WebViewScreen(screen.url))
+                else -> {}
+            }
+        }
         LaunchedEffect(Unit) {
             while (progress < 1f){
                 progress += 0.01f
@@ -84,7 +102,8 @@ private fun ProgressBar(
     progress: Float,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier.size(height = 30.dp, width = 200.dp)
+    Box(modifier
+        .size(height = 30.dp, width = 200.dp)
         .background(Color.Black, CircleShape)
         .border(2.dp, Color.White, CircleShape)
         .clip(CircleShape)

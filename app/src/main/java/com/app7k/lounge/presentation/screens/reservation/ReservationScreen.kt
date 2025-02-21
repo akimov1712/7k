@@ -128,7 +128,7 @@ object ReservationScreen: Tab {
             )
             Spacer(Modifier.height(20.dp))
             AppButton(
-                text = "Reserve",
+                text = stringResource(R.string.reserve),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)

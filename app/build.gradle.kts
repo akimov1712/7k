@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -41,8 +42,21 @@ android {
 
 dependencies {
 
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.negotiation)
+    implementation(libs.ktor.kotlinx.serialization.json)
+    implementation(libs.ktor.logging.android)
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.androidx.datastore.datastore.preferences)
+
+    implementation(libs.komposecountrycodepicker)
+    implementation (libs.libphonenumber)
+    implementation (libs.ohteepee)
     implementation(libs.jetpack.compose.country.code.picker.emoji)
-    implementation("androidx.compose.material:material:1.7.8")
     implementation (libs.accompanist.systemuicontroller)
     implementation(libs.voyager.bottom.sheet.navigator)
     implementation(libs.voyager.navigator)
