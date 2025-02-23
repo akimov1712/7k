@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-
+    implementation ("io.github.kevinnzou:compose-webview:0.33.6")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     implementation(libs.ktor.client.core)

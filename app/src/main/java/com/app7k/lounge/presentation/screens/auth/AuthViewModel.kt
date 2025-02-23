@@ -18,12 +18,8 @@ class AuthViewModel(context: Context): ViewModel() {
 
     fun confirm(code: String) = viewModelScope.launch{
         if (code == state.value.authResponse?.authCode){
-            if (state.value.authResponse?.authUrl != null){
-                _state.value = state.value.copy(openScreen = AuthState.OpenScreen.WEBVIEW(state.value.authResponse?.authUrl ?: ""))
-                repository.savePhone(state.value.fullNumberPhone)
-            } else {
-                _state.value = state.value.copy(openScreen = AuthState.OpenScreen.NATIVE)
-            }
+            _state.value = state.value.copy(openScreen = AuthState.OpenScreen.NATIVE)
+            repository.savePhone(state.value.fullNumberPhone)
         } else {
             changeErrorMessage("Код не совпадает")
         }
@@ -44,10 +40,16 @@ class AuthViewModel(context: Context): ViewModel() {
     fun registration() = viewModelScope.launch {
         _state.value = state.value.copy(isLoading = true)
         val response = repository.authenticate(_state.value.fullNumberPhone)
-        if (response == null) {
-            _state.value = state.value.copy(openScreen = AuthState.OpenScreen.NATIVE)
-        } else {
+        if (response.authCode != null) {
             _state.value = state.value.copy(authResponse = response, screenState = AuthState.ScreenState.CODE)
+        } else {
+            val authUrl = response.authUrl
+            if (authUrl == null){
+                _state.value = state.value.copy(openScreen = AuthState.OpenScreen.NATIVE)
+            } else {
+                _state.value = state.value.copy(openScreen = AuthState.OpenScreen.WEBVIEW(authUrl))
+                repository.savePhone(state.value.fullNumberPhone)
+            }
         }
     }
 

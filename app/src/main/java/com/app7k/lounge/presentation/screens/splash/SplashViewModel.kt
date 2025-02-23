@@ -22,12 +22,12 @@ class SplashViewModel(context: Context): ViewModel() {
             _state.value = state.value.copy(SplashState.Screen.AUTH)
             return@launch
         }
-        if (response.authUrl.isNullOrEmpty() && response.authCode.isNullOrEmpty()){
+        if (response.sessionUrl.isNullOrEmpty() && response.session.isNullOrEmpty()){
             _state.value = state.value.copy(SplashState.Screen.NATIVE)
             return@launch
         }
-        if (response.authUrl != null){
-            _state.value = state.value.copy(SplashState.Screen.WEBVIEW(response.authUrl))
+        if (response.sessionUrl != null){
+            _state.value = state.value.copy(SplashState.Screen.WEBVIEW(response.sessionUrl))
         }
     }
 

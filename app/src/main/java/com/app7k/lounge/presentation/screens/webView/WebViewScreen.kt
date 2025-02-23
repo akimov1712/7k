@@ -1,8 +1,11 @@
 package com.app7k.lounge.presentation.screens.webView
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.View
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -16,10 +19,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +47,12 @@ import com.app7k.lounge.presentation.screens.splash.SplashState
 import com.app7k.lounge.ui.components.AppButton
 import com.app7k.lounge.ui.components.AppText
 import com.app7k.lounge.ui.theme.Colors
+import com.kevinnzou.web.LoadingState
+import com.kevinnzou.web.WebView
+import com.kevinnzou.web.rememberWebViewNavigator
+import com.kevinnzou.web.rememberWebViewState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class WebViewScreen(private val url: String): Screen {
 
@@ -45,81 +63,96 @@ class WebViewScreen(private val url: String): Screen {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun ScreenContent(url: String) {
     var isError by remember { mutableStateOf(false) }
-    var lastLoadedUrl by remember { mutableStateOf(url) }
-    val activity = LocalActivity.currentOrThrow
-    var webView: WebView? = null
+    val state = rememberWebViewState(url)
+    val navigator = rememberWebViewNavigator()
+    val refreshScope = rememberCoroutineScope()
+    var refreshing by remember { mutableStateOf(false) }
 
-    BackHandler {
-        if (webView?.canGoBack() == true) {
-            webView?.goBack()
-        } else{
-            activity.onBackPressed()
-        }
+    fun refresh() = refreshScope.launch {
+        refreshing = true
+        delay(1500)
+        state.lastLoadedUrl?.let { navigator.loadUrl(it) }
+        refreshing = false
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    LaunchedEffect(state.errorsForCurrentRequest.lastOrNull()) {
+        isError = state.errorsForCurrentRequest.isNotEmpty()
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize().background(Colors.RED_TO_RED_BLACK)
+    ) {
         if (isError) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                        .background(Colors.RED_TO_RED_BLACK)
-                        .padding(50.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+            ErrorScreen(onRetry = {
+                state.lastLoadedUrl?.let(navigator::loadUrl)
+                isError = false
+            })
+        } else {
+            if (state.loadingState is LoadingState.Loading) {
+                LoadingIndicator()
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                PullToRefreshBox(
+                    modifier = Modifier.fillMaxSize(),
+                    isRefreshing = refreshing,
+                    onRefresh = { refresh() }
                 ) {
-                    AppText(
-                        text = "Произошла ошибка при загрузке",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                    WebView(
+                        modifier = Modifier.fillMaxSize(),
+                        state = state,
+                        onCreated = {
+                            it.settings.javaScriptEnabled = true
+                            it.settings.setSupportZoom(true)
+                        },
+                        navigator = navigator
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    AppButton(
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
-                        text = "Повторить"
-                    ) {
-                        isError = false
-                        webView?.loadUrl(lastLoadedUrl)
-                    }
                 }
             }
-        } else {
-            AndroidView(
-                factory = { context ->
-                    WebView(context).apply {
-                        webView = this
-                        settings.javaScriptEnabled = true
-                        webViewClient = object : WebViewClient() {
+        }
+    }
+}
 
-                            override fun onPageFinished(view: WebView?, url: String?) {
-                                super.onPageFinished(view, url)
-                                url?.let { lastLoadedUrl = it }
-                            }
-
-                            override fun onReceivedError(
-                                view: WebView?,
-                                request: WebResourceRequest?,
-                                error: WebResourceError?
-                            ) {
-                                val host = request?.url?.host ?: ""
-                                println("Произошла ошибка на $host")
-                                if (url.contains(host)){
-                                    isError = true
-                                }
-                            }
-                        }
-                        loadUrl(lastLoadedUrl)
-                    }
-                },
-                update = { it.loadUrl(lastLoadedUrl) }
+@Composable
+private fun ErrorScreen(onRetry: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .background(Colors.RED_TO_RED_BLACK)
+                .padding(50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            AppText(
+                text = "Произошла ошибка при загрузке",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            AppButton(
+                modifier = Modifier.fillMaxWidth().height(48.dp),
+                text = "Повторить",
+                onClick = onRetry
             )
         }
+    }
+}
+
+@Composable
+private fun LoadingIndicator() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = Color.White)
     }
 }

@@ -9,11 +9,11 @@ class AuthApi(
     private val api: ApiFactory
 ){
 
-    suspend fun getVerificationCode(auth: AuthDto) = api.client.post("https://7kloungegp.com/auth/get-verification-code/"){
+    suspend fun getVerificationCode(auth: AuthDto) = api.client.post("https://7kloungegp.com/user/authentication/"){
         setBody(auth)
     }
 
-    suspend fun getAuthKey(auth: AuthDto) = api.client.post("https://7kloungegp.com/auth/get-auth-key/"){
+    suspend fun getAuthKey(auth: AuthDto) = api.client.post("https://7kloungegp.com/user/get-session/"){
         setBody(auth)
     }
 
